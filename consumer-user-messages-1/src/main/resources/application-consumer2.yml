@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: consumer-user-messages-2
+  kafka:
+    consumer:
+      group-id: user-message-consumer-2
+
+  datasource:
+    url: jdbc:postgresql://localhost:25432/consumer_2
+    username: app_2
+    password: app_2
