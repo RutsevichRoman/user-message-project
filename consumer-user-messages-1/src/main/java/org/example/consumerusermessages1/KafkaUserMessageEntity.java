@@ -42,7 +42,7 @@ public class KafkaUserMessageEntity {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb", nullable = false)
-    private String message;
+    private byte[] message;
 
     @Column(name = "kafka_ts_ms")
     private Long kafkaTimestampMs;
@@ -50,7 +50,7 @@ public class KafkaUserMessageEntity {
     @Column(name = "received_at", nullable = false)
     private Instant receivedAt;
 
-    public KafkaUserMessageEntity(String topic, int partition, long offset, String key, String message, Long kafkaTimestampMs,
+    public KafkaUserMessageEntity(String topic, int partition, long offset, String key, byte[] message, Long kafkaTimestampMs,
                                   Instant receivedAt) {
         this.topic = topic;
         this.partition = partition;

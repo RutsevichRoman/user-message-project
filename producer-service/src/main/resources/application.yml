@@ -4,5 +4,15 @@ spring:
   kafka:
     bootstrap-servers: localhost:29092
     producer:
+      acks: all
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer
+      batch-size: 32768 # bytes
+      compression-type: snappy
+      retries: 10_000
+      buffer-memory: 33554432 #32 Mb
+      properties:
+        linger.ms: 100
+        enable.idempotence: true
+        max.in.flight.requests.per.connection: 5
+

@@ -12,7 +12,9 @@ public class KafkaUserMessageService {
     private final KafkaUserMessageRepository kafkaUserMessageRepository;
 
     public KafkaUserMessageEntity store(KafkaUserMessageEntity entity) {
-        return kafkaUserMessageRepository.save(entity);
+        final KafkaUserMessageEntity save = kafkaUserMessageRepository.save(entity);
+        kafkaUserMessageRepository.flush();
+        return save;
     }
 
 }

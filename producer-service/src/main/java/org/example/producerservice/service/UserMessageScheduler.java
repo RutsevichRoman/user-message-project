@@ -19,25 +19,25 @@ import org.springframework.stereotype.Component;
 public class UserMessageScheduler {
 
     private static final String TEXT_MESSAGE = "Hey! How are you ?";
+    private static final int BATCH_MESSAGES = 5;
     private static final Random RANDOM = new Random();
     private final UserMessageProducerService userMessageProducerService;
 
     @Scheduled(fixedRate = 10_000)
     public void sendUserMessage() {
 
-        final UserMessage userMessage = new UserMessage(
-            UUID.randomUUID().toString(),
-            RANDOM.nextLong(),
-            MessageType.TEXT,
-            TEXT_MESSAGE.getBytes(),
-            Instant.now()
-        );
+        for (int i = 0; i < BATCH_MESSAGES; i++) {
+            final UserMessage userMessage = new UserMessage(
+                UUID.randomUUID().toString(),
+                RANDOM.nextLong(),
+                MessageType.TEXT,
+                TEXT_MESSAGE.getBytes(),
+                Instant.now()
+            );
 
-        log.info("Sending user message with id = {}", userMessage.getId());
-
-        userMessageProducerService.sendMessage(userMessage);
-
-        log.info("SENT user message with id = {}", userMessage.getId());
+            log.info("Sending user message with id = {}", userMessage.getId());
+            userMessageProducerService.sendMessage(userMessage);
+        }
     }
 
 }

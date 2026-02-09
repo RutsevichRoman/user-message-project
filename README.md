@@ -1,6 +1,22 @@
-1. Run from root dir user-message-project: 
+1. Пример создания топика: 
+docker exec -it kafka_broker /opt/kafka/bin/kafka-topics.sh \
+   --bootstrap-server kafka:9092 \
+   --create \
+   --topic user.message.topic \
+   --partitions 1 \
+   --replication-factor 1 
+   --config cleanup.policy=delete
+2. Пример добавление для топика параметра, например, cleanup.policy=delete:
+   docker exec -it kafka_broker /opt/kafka/bin/kafka-configs.sh \
+   --bootstrap-server kafka:9092 \
+   --entity-type topics \
+   --entity-name user.message.topic \
+   --alter \
+   --add-config cleanup.policy=delete
+
+3. Run from root dir user-message-project: 
    docker compose up -d --build
-2. Stop:
+4. Stop:
    docker compose down -v
 
 Notes:

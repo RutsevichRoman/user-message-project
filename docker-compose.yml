@@ -10,6 +10,11 @@ services:
       KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
 
+      # Set time retention to 30 days hour (720 hours)
+      KAFKA_LOG_RETENTION_HOURS: 720
+      # max partition size
+      KAFKA_LOG_RETENTION_BYTES: 1073741824 # 1 GB
+
       # два входа: для docker-сети и для хоста
       KAFKA_LISTENERS: PLAINTEXT://kafka:9092,CONTROLLER://kafka:9093,PLAINTEXT_HOST://0.0.0.0:29092
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
