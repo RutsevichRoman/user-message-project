@@ -31,7 +31,7 @@ public class ProcessingPaymentOutbox {
     /**
      * Бесконечный цикл обработки: берём батчами записи со статусом PENDING
      */
-    @Scheduled(fixedDelayString = "${outbox.fixed-delay:1000}")
+    @Scheduled(fixedDelay = 1000)
     @Transactional
     public void publishPendingEvents() {
         try {

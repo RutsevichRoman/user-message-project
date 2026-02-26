@@ -81,4 +81,5 @@ application-consumer1.yml, для второго application-consumer2.yml
 │  • MessageSavedEvent │
 └──────────────────────┘
 
-В случае ошибки публикации в топик user.message.saved происходит отправка в топик - 
+В случае ошибки публикации в топик user.message.saved происходит 
+отправка в топик - payment-outbox.dlq
