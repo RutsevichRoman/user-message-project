@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package usermsg;
+
+option java_package = "org.example.protobuf";
+option java_multiple_files = true;
+
+message UserMessage {
+  string id = 1;
+  int64 user_id = 2;
+  string content = 3;
+
+  enum Status {
+    STATUS_UNSPECIFIED = 0;
+    PROCESSING = 1;
+    FINISHED = 2;
+  }
+
+  Status status = 4;
+  int64 timestamp_ms = 5;
+}

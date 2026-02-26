@@ -1,0 +1,6 @@
+rootProject.name = "user-message-project"
+
+include("kafka-producer-starter")
+include("protobuf-contract")
+include("producer-service")
+include("consumer-user-messages-1")

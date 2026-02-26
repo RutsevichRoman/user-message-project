@@ -30,11 +30,11 @@ services:
       KAFKA_NUM_PARTITIONS: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
 
-  postgres1:
+  postgres-processing:
     image: postgres:16
-    container_name: postgres1
+    container_name: postgres-processing
     environment:
-      POSTGRES_DB: consumer_1
+      POSTGRES_DB: processing
       POSTGRES_USER: app_1
       POSTGRES_PASSWORD: app_1
     ports:
@@ -42,11 +42,11 @@ services:
     volumes:
       - pgdata1:/var/lib/postgresql/data
 
-  postgres2:
+  postgres-finished:
     image: postgres:16
-    container_name: postgres2
+    container_name: postgres-finished
     environment:
-      POSTGRES_DB: consumer_2
+      POSTGRES_DB: finished
       POSTGRES_USER: app_2
       POSTGRES_PASSWORD: app_2
     ports:
@@ -55,7 +55,11 @@ services:
       - pgdata2:/var/lib/postgresql/data
 
   producer:
-    build: ./producer-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_MODULE: producer-service
     image: user-message-producer:latest
     container_name: producer
     depends_on:
@@ -65,37 +69,46 @@ services:
       # если у тебя в producer есть профили — оставь, если нет — можно убрать
       SPRING_PROFILES_ACTIVE: producer
 
-  consumer1:
-    build: ./consumer-user-messages-1
+  consumer-processing:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_MODULE: consumer-user-messages-1
     image: user-message-consumer:latest
-    container_name: consumer1
+    container_name: consumer-processing
     depends_on:
       - kafka
-      - postgres1
+      - postgres-processing
     environment:
-      SPRING_PROFILES_ACTIVE: consumer1
+      SPRING_PROFILES_ACTIVE: processing
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      SPRING_KAFKA_CONSUMER_GROUP_ID: user-message-consumer-group-1
+      SPRING_KAFKA_CONSUMER_GROUP_ID: user-message-consumer-processing
 
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres1:5432/consumer_1
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-processing:5432/processing
       SPRING_DATASOURCE_USERNAME: app_1
       SPRING_DATASOURCE_PASSWORD: app_1
 
       # чтобы таблицы создавались сами (если ты используешь JPA ddl-auto)
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
 
-  consumer2:
+  consumer-finished:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_MODULE: consumer-user-messages-1
     image: user-message-consumer:latest
-    container_name: consumer2
+    container_name: consumer-finished
     depends_on:
       - kafka
-      - postgres2
+      - postgres-finished
     environment:
-      SPRING_PROFILES_ACTIVE: consumer2
+      SPRING_PROFILES_ACTIVE: finished
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      SPRING_KAFKA_CONSUMER_GROUP_ID: user-message-consumer-group-2
+      SPRING_KAFKA_CONSUMER_GROUP_ID: user-message-consumer-finished
 
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres2:5432/consumer_2
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-finished:5432/finished
       SPRING_DATASOURCE_USERNAME: app_2
       SPRING_DATASOURCE_PASSWORD: app_2
 
